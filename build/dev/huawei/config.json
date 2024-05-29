@@ -1,0 +1,21 @@
+{
+	"is_landscape": true,
+	"name":"GSN Game HW",
+	"android":{
+		"package_name":"gsn.game.zingplaynew"
+	},
+	"tracker":{
+		"app_name":"demo",
+		"partner":"huawei"
+	},
+	"social":{
+		"facebook":{
+			"id":"526742574046446",
+			"use_provider": true
+		},
+		"google": {
+			"id":""
+		}
+	},
+	"country":"vn"
+}

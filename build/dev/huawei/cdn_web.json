@@ -1,0 +1,29 @@
+{
+    "assets": [
+        {
+            "from": "src",
+            "to": "src"
+        },
+        {
+            "from": "res",
+            "to": "res"
+        },
+        {
+            "from": "main.js",
+            "to": ""
+        },
+        {
+            "from": "project.json",
+            "to": ""
+        },
+        {
+            "from": "index.html",
+            "to": ""
+        }
+    ],
+	"list_resource":{
+		"ignore_preload":[".*\\.js$",".*.banner\\.png$", ".*/banner/.*",".*\\.bak$"]
+	},
+	"remote":"http://portal-gsn.mto.zing.vn/demo_vn_dev_web",
+    "key":["0x99999999", "0x99999999", "0x99999999", "0x99999999"]
+}

@@ -1,0 +1,44 @@
+{
+    "assets": [
+        {
+            "from": "src",
+            "to": "src"
+        },
+        {
+            "from": "res",
+            "to": "res"
+        },
+	   {
+            "from": "simulator/win32/script",
+            "to": "script"
+        },
+        {
+            "from": "main.js",
+            "to": ""
+        },
+        {
+            "from": "project.json",
+            "to": ""
+        },
+        {
+            "from": "config.json",
+            "to": ""
+        }
+    ],
+    "key":["0x99999999", "0x99999999", "0x99999999", "0x99999999"],
+    "remote":"http://portal-gsn.mto.zing.vn/demo_vn_dev",
+	"compile_js":true,
+	"force_versions":["2-3", "4-8", "10"],
+    "ignore_in_listing": [
+        "res/download/group/eventPopup/.*",
+        "any_path_with_regex_to_not_include_in_apk"
+    ],
+    "groups": [{
+        "name": "eventPopup",
+        "path": "res/download/group/eventPopup/"
+    },
+    {
+        "name": "new_group_here",
+        "path": "group_path_with_regex"
+    }]
+}
