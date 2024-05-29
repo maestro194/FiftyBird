@@ -1,0 +1,3 @@
+lang_auto_text    ="Test localization on gui"
+lang_hello    ="Hello!"
+lang_dynamic_loading    ="Downloading..."

@@ -1,0 +1,79 @@
+{
+    "project_type": "javascript",
+    "debugMode": 1,
+    "showFPS": true,
+    "frameRate": 10000,
+    "id": "gameCanvas",
+    "renderMode": 0,
+    "engineDir": "frameworks/cocos2d-html5",
+    "modules": [
+        "cocos2d",
+        "extensions",
+        "external",
+        "plugin-facebook",
+        "plugin-google"
+    ],
+    "plugin": {
+        "tracker": {
+            "appName": "ZPPortal"
+        },
+        "facebook": {
+            "appId": "526742574046446",
+            "autoLogAppEvents": true,
+            "xfbml": true,
+            "version": "v5.0"
+        },
+        "google": {
+            "client_id": "578063972293-4l5n2tt9qk72qb0ge9d9bao72k7qomcg.apps.googleusercontent.com"
+        }
+    },
+    "jsListOrder": [
+        "src/data/**/*.js",
+        "src/framework/**/*.js",
+        "src/gui/screen/**/*.js",
+        "src/**/*.js"
+    ],
+    "jsList": [
+        "src/data/Resource.js",
+        "src/data/ResourceAnimation.js",
+        "src/data/WebResource.js",
+        "src/framework/AnimationMgr.js",
+        "src/framework/Download.js",
+        "src/framework/Framework.js",
+        "src/framework/GUI.js",
+        "src/framework/libs/aes.js",
+        "src/framework/libs/crypt.js",
+        "src/framework/libs/md5.js",
+        "src/framework/libs/signals.js",
+        "src/framework/libs/underscore.js",
+        "src/framework/Localization.js",
+        "src/framework/Network.js",
+        "src/framework/PaymentInfo.js",
+        "src/framework/plugins/AppleIAP.js",
+        "src/framework/plugins/AppleID.js",
+        "src/framework/plugins/Facebook.js",
+        "src/framework/plugins/FCM.js",
+        "src/framework/plugins/Google.js",
+        "src/framework/plugins/GoogleIAP.js",
+        "src/framework/plugins/jsb_pluginx.js",
+        "src/framework/plugins/PlatformWrapper.js",
+        "src/framework/plugins/ZingMe.js",
+        "src/framework/PoolObject.js",
+        "src/framework/StringUtils.js",
+        "src/framework/UserData.js",
+        "src/base/network/GameClient.js",
+        "src/base/network/GameClientListener.js",
+        "src/base/network/InPacketFactory.js",
+        "src/base/Resource.js",
+        "src/base/UIFactory.js",
+
+        "src/fiftybird/ScreenHome.js",
+        "src/fiftybird/CountDown.js",
+        "src/fiftybird/ScreenPlay.js",
+        "src/fiftybird/GameOver.js",
+        "src/fiftybird/Resources.js",
+        "src/fiftybird/Background.js",
+        "src/fiftybird/config/GameConfig.js"
+
+    ]
+}
