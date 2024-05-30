@@ -4,7 +4,8 @@ var GC = GC || {};
 GC.GAME_STATE = {
     HOME: 0,
     PLAY: 1,
-    OVER: 2
+    COUNT: 2,
+    OVER: 3
 };
 
 // font
@@ -14,22 +15,26 @@ GC.FONT = "fiftybird/flappy.ttf";
 GC.SCORE = 0;
 
 // scroll speed
-GC.SCROLL_SPEED = 0;
-
+GC.SCROLL_SPEED = 10;
 
 // container
 GC.CONTAINER = {
     BACKGROUNDS: [],
+    GROUNDS: [],
     PIPES: [],
 }
 
-// Menu offset
+// keys
+GC.KEYS = []
+
+// Home
 GC.TITLE = "FIFTY BIRD";
 GC.ENTER = "PRESS ENTER";
-GC.TITLEX = 640;
+GC.TITLEX = 512;
 GC.TITLEY = 480;
-GC.BIRDX = 640;
-GC.BIRDY = 400;
-GC.WIDTH = 1280;
-GC.HEIGHT = 720;
+GC.BIRDX = 256;
+GC.BIRDY = 480;
+GC.WIDTH = 1024;
+GC.HEIGHT = 768;
 GC.SCALE = 2.5;
+GC.SCALE_BIRD = 1.25;

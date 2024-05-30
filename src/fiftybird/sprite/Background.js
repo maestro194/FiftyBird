@@ -2,7 +2,7 @@
 var Background = cc.Sprite.extend({
     active:true,
     ctor:function () {
-        this._super("res/fiftybird/background.png");
+        this._super(res.background_png);
         var rect = cc.rect(0, 1, this.width, this.height-2);
         this.setTextureRect(rect);
         this.anchorX = 0;
@@ -15,9 +15,15 @@ var Background = cc.Sprite.extend({
     }
 });
 
-Background.create = function () {
+Background.create = function (state) {
     var background = new Background();
-    homeLayer.addChild(background, -10);
+    if(state === GC.GAME_STATE.HOME)
+        homeLayer.addChild(background, -10);
+    if (state === GC.GAME_STATE.PLAY)
+        playLayer.addChild(background, -10);
+    if (state === GC.GAME_STATE.OVER)
+        overLayer.addChild(background, 10);
+
     GC.CONTAINER.BACKGROUNDS.push(background);
     return background;
 };
@@ -37,10 +43,10 @@ Background.getOrCreate = function () {
 };
 
 
-Background.preSet = function () {
+Background.preSet = function (state) {
     var background = null;
     for (var i = 0; i < 2; i++) {
-        background = Background.create();
+        background = Background.create(state);
         background.visible = false;
         background.active = false;
     }
