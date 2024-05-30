@@ -1,8 +1,5 @@
 # ignore framework files
 /frameworks
 
-# ignore build files
-/build
-
 # ignore simulator files
 /simulator

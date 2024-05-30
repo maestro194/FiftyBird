@@ -1,5 +1,5 @@
 var GC = GC || {};
-
+var winSize = cc.director.getWinSize();
 // game state
 GC.GAME_STATE = {
     HOME: 0,
@@ -35,8 +35,8 @@ GC.KEYS = []
 // Home
 GC.TITLE_HOME = "FIFTY BIRD";
 GC.ENTER = "PRESS ENTER";
-GC.TITLEX = 512;
-GC.TITLEY = 480;
+GC.TITLEX = winSize.width / 2;
+GC.TITLEY = winSize.height * 2 / 3;
 GC.WIDTH = 1024;
 GC.HEIGHT = 768;
 GC.SCALE = 2.55;

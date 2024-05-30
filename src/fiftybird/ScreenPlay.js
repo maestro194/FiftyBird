@@ -1,13 +1,15 @@
 
 var GC = GC || {};
 var PLAY = 1;
+var COUNT = 2
+var OVER = 3;
 var MAX_CONTAINT_WIDTH = 20;
 var MAX_CONTAINT_HEIGHT = 20;
 
 var playLayer;
 
 var ScreenPlay = cc.Layer.extend({
-    _state: HOME,
+    _state: COUNT,
     _background: null,
     _backgroundWidth: 0,
     _backgroundRe: null,
@@ -40,7 +42,7 @@ var ScreenPlay = cc.Layer.extend({
 
         // schedule
         this.scheduleUpdate();
-        this.schedule(this._counter(), 1);
+        // this.schedule(this.update, 0.016);
 
         playLayer = this;
 
@@ -61,6 +63,7 @@ var ScreenPlay = cc.Layer.extend({
         this.spawnPipe(dt);
         this.movePipe(dt);
         this.checkCollision();
+        this._time += dt;
     },
 
     initBackground: function () {

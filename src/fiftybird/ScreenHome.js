@@ -50,7 +50,7 @@ var ScreenHome = cc.Layer.extend({
     },
 
     initTitle: function() {
-        var title = new ccui.Text(GC.TITLE_HOME, GC.FONT, 64);
+        var title = new ccui.Text(GC.TITLE_HOME, res.font, 64);
         title.attr({
             // anchorX: 0,
             // anchorY: 0,
@@ -59,7 +59,7 @@ var ScreenHome = cc.Layer.extend({
         })
         this.addChild(title, 1000);
 
-        var enter = new ccui.Text(GC.ENTER, GC.FONT, 36);
+        var enter = new ccui.Text(GC.ENTER, res.font, 36);
         enter.attr({
             // anchorX: 0,
             // anchorY: 0,
@@ -118,9 +118,9 @@ var ScreenHome = cc.Layer.extend({
         var currPosX = bg.x - movingDist;
         var bgRe = this._backgroundRe;
 
-        console.log(currPosX);
-        console.log(bgWidth);
-        console.log(winSize.width);
+        // console.log(currPosX);
+        // console.log(bgWidth);
+        // console.log(winSize.width);
 
         // check if needed to create a new background
         if(bgWidth + currPosX <= winSize.width){

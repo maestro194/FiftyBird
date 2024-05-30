@@ -72,6 +72,7 @@
         "src/fiftybird/ScreenPlay.js",
         "src/fiftybird/GameOver.js",
         "src/fiftybird/Resources.js",
+        "src/fiftybird/GameController.js",
 
         "src/fiftybird/sprite/Background.js",
         "src/fiftybird/sprite/Bird.js",
