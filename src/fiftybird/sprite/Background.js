@@ -3,10 +3,11 @@ var Background = cc.Sprite.extend({
     active:true,
     ctor:function () {
         this._super(res.background_png);
-        var rect = cc.rect(0, 1, this.width, this.height-2);
+        var rect = cc.rect(0, 0, this.width, this.height);
         this.setTextureRect(rect);
         this.anchorX = 0;
         this.anchorY = 0;
+        this.setPosition(winSize.width - this.width, 0);
         this.scale = GC.SCALE;
     },
     destroy:function () {
@@ -15,20 +16,14 @@ var Background = cc.Sprite.extend({
     }
 });
 
-Background.create = function (state) {
+Background.create = function (layer) {
     var background = new Background();
-    if(state === GC.GAME_STATE.HOME)
-        homeLayer.addChild(background, -10);
-    if (state === GC.GAME_STATE.PLAY)
-        playLayer.addChild(background, -10);
-    if (state === GC.GAME_STATE.OVER)
-        overLayer.addChild(background, 10);
-
+    layer.addChild(background, -10);
     GC.CONTAINER.BACKGROUNDS.push(background);
     return background;
 };
 
-Background.getOrCreate = function () {
+Background.getOrCreate = function (layer) {
     var selChild = null;
     for (var j = 0; j < GC.CONTAINER.BACKGROUNDS.length; j++) {
         selChild = GC.CONTAINER.BACKGROUNDS[j];
@@ -38,7 +33,7 @@ Background.getOrCreate = function () {
             return selChild;
         }
     }
-    selChild = Background.create();
+    selChild = Background.create(layer);
     return selChild;
 };
 

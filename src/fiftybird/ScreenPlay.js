@@ -1,8 +1,8 @@
-/**
- * Create by DongLQ on 27/5/2024
- */
+
 var GC = GC || {};
 var PLAY = 1;
+var MAX_CONTAINT_WIDTH = 20;
+var MAX_CONTAINT_HEIGHT = 20;
 
 var playLayer;
 
@@ -14,10 +14,13 @@ var ScreenPlay = cc.Layer.extend({
     _ground: null,
     _groundWidth: 0,
     _groundRe: null,
+    _pipe: [],
+    _pipeTimer: 0,
     _time: 0,
     _bird: null,
+    score: 0,
     yVelocity: 0,
-    yAcceleration: 0,
+    gravity: 50,
 
     ctor: function () {
         this._super();
@@ -33,6 +36,7 @@ var ScreenPlay = cc.Layer.extend({
         GC.CONTAINER.BACKGROUNDS = [];
         GC.CONTAINER.GROUNDS = [];
         GC.CONTAINER.PIPES = [];
+        GC.KEYS = [];
 
         // schedule
         this.scheduleUpdate();
@@ -41,10 +45,10 @@ var ScreenPlay = cc.Layer.extend({
         playLayer = this;
 
         // preset
-        Background.preSet(this._state);
-        Ground.preSet();
-        Bird.preSet();
-        // Pipe.preSet();
+        Background.preSet(playLayer);
+        Ground.preSet(playLayer);
+        // Bird.preSet();
+        Pipe.preSet(playLayer);
 
         // background
         this.initBackground();
@@ -53,26 +57,39 @@ var ScreenPlay = cc.Layer.extend({
 
     update: function (dt) {
         this.movingBackground(dt);
+        this.gravityMove(dt);
+        this.spawnPipe(dt);
+        this.movePipe(dt);
+        this.checkCollision();
     },
 
     initBackground: function () {
-        this._background = Background.getOrCreate();
+        this._background = Background.getOrCreate(playLayer);
         this._backgroundWidth = this._background.width;
 
-        this._ground = Ground.getOrCreate();
+        this._ground = Ground.getOrCreate(playLayer);
         this._groundWidth = this._ground.width;
 
-        this._bird = Bird.create();
-        // this._bird = cc.Sprite("res/fiftybird/bird.png");
-        // this._bird.attr({
-        //     anchorX: 0,
-        //     anchorY: 0,
-        // })
-        // this.addChild(this._bird, 100);
+        this._bird = Bird.create(playLayer);
+
+    },
+
+    checkCollision: function () {
+        let pipe = null;
+        let bird = this._bird;
+
+        for(let i = 0; i < GC.CONTAINER.PIPES.length; i ++) {
+            pipe = GC.CONTAINER.PIPES[i];
+            if (!pipe.active)
+                continue;
+            if (this.collide(bird, pipe)) {
+                this.onGameOver();
+            }
+        }
     },
 
     _counter: function() {
-        if (this._state === GC.GAME_STATE.HOME) {
+        if (this._state === GC.GAME_STATE.PLAY) {
             this._time ++;
         }
     },
@@ -94,7 +111,7 @@ var ScreenPlay = cc.Layer.extend({
             this._backgroundRe = this._background;
 
             //create a new background
-            this._background = Background.getOrCreate();
+            this._background = Background.getOrCreate(playLayer);
             locBackground = this._background;
             locBackground.x = currPosX + locGroundWidth - 5;
         } else
@@ -112,12 +129,35 @@ var ScreenPlay = cc.Layer.extend({
         }
     },
 
+    spawnPipe: function (dt) {
+        this._pipeTimer += dt * GC.SCROLL_SPEED * 10;
+        if (this._pipeTimer >= GC.PIPE_WIDTH) {
+            this._pipeTimer = 0;
+            var pipeUp = Pipe.getOrCreate(playLayer);
+            var pipeDown = Pipe.getOrCreate(playLayer);
+            pipeUp.flip();
+        }
+    },
+
+    movePipe: function (dt) {
+        GC.CONTAINER.PIPES.forEach(pipe => {
+            if (pipe.active) {
+                pipe.x -= dt * GC.PIPE_SPEED;
+                if (pipe.x < -pipe.width) {
+                    pipe.x = GC.PIPEX;
+                    pipe.active = false;
+                }
+            }
+        })
+    },
+
+    gravityMove: function (dt) {
+        this._bird.move(dt);
+    },
+
     addKeyboardListener:function(){
-        //Add code here
         if (cc.sys.capabilities.hasOwnProperty('keyboard')) {
             const self = this;
-            // a moving system so that anytime a key is pressed add the key to the keydown,
-            // the ship can move in multiple directions at once and it moved if at least 1 key is pressed
             cc.eventManager.addListener({
                 event: cc.EventListener.KEYBOARD,
                 onKeyPressed: function (keyCode) {
@@ -130,19 +170,31 @@ var ScreenPlay = cc.Layer.extend({
             }, this)
             this.schedule(function(){
                 if (self._state === PLAY) {
-                    if(GC.KEYS[cc.KEY.enter]) {
-                        self.onGameOver();
-                        self._state = OVER;
+                    if(GC.KEYS[cc.KEY.space]) {
+                        GC.KEYS[cc.KEY.space] = false;
+                        this._bird.jump();
                     }
                 }
             }, 0)
         }
     },
 
+    collide:function (a, b) {
+        var ax = a.x, ay = a.y, bx = b.x, by = b.y;
+        // if (Math.abs(ax - bx) > MAX_CONTAINT_WIDTH || Math.abs(ay - by) > MAX_CONTAINT_HEIGHT)
+        //     return false;
+
+        var aRect = a.collideRect(ax, ay);
+        var bRect = b.collideRect(bx, by);
+        return cc.rectIntersectsRect(aRect, bRect);
+    },
+
     onEnter: function () {
         this._super();
     },
     onGameOver: function () {
-        fr.view(GameOver);
+        var scene = new cc.Scene();
+        scene.addChild(new GameOver());
+        cc.director.runScene(new cc.TransitionFade(1.5, scene));
     }
 })

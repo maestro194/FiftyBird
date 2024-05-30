@@ -1,30 +1,46 @@
 
 var Bird = cc.Sprite.extend({
     active: true,
+    speed: 0,
+
     ctor: function() {
         this._super(res.bird_png);
-        var rect = cc.rect(GC.BIRDX, GC.BIRDY, this.width, this.height);
+        var rect = cc.rect(0, 0, this.width, this.height);
         this.setTextureRect(rect);
+        this.setPosition(GC.BIRDX, GC.BIRDY);
         this.anchorX = 0;
         this.anchorY = 0;
-        this.scale = GC.SCALE;
+        this.scale = GC.SCALE_BIRD;
+        this.speed = 0;
     },
     destroy: function() {
         this.visible = false;
         this.active = false;
-    }
+    },
+    move: function (dt) {
+        this.speed += dt * GC.SPEED_MULTIPLIER;
+        if (this.speed > GC.GRAVITY)
+            this.speed = GC.GRAVITY;
+        console.log(this.speed);
+
+        this.y -= dt * this.speed;
+        if (this.y < 0)
+            this.y = 0;
+    },
+    jump: function () {
+        this.speed = GC.JUMP_SPEED; // JUMP_SPEED
+    },
+
+    collideRect:function (x, y) {
+        var w = this.width, h = this.height;
+        return cc.rect(x, y, w, h);
+    },
 });
 
-Bird.create = function () {
+Bird.create = function (layer) {
     var bird = new Bird();
     bird.active = true;
     bird.visible = true;
-    playLayer.addChild(bird, 100);
+    layer.addChild(bird, 10);
     return bird;
 };
-
-Bird.preSet = function() {
-    var bird = Bird.create();
-    bird.active = false;
-    bird.visible = false;
-}

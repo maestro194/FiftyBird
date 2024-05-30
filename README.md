@@ -1,0 +1,1 @@
+- Thay layer trong sprite tao rieng cho 1 layer thay vi global call

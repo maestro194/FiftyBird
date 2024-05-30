@@ -1,6 +1,3 @@
-/**
- * Created by DongLQ on 27/5/2024
- */
 
 var GC = GC || {};
 var HOME = 0;
@@ -25,6 +22,7 @@ var ScreenHome = cc.Layer.extend({
         this._state = HOME;
 
         GC.CONTAINER.BACKGROUNDS = [];
+        GC.KEYS = [];
 
         winSize = cc.director.getWinSize();
 
@@ -35,7 +33,7 @@ var ScreenHome = cc.Layer.extend({
         homeLayer = this;
 
         // preset
-        Background.preSet(this._state);
+        Background.preSet(homeLayer);
 
         this.initTitle();
         this.initBackground();
@@ -52,7 +50,7 @@ var ScreenHome = cc.Layer.extend({
     },
 
     initTitle: function() {
-        var title = new ccui.Text(GC.TITLE, GC.FONT, 64);
+        var title = new ccui.Text(GC.TITLE_HOME, GC.FONT, 64);
         title.attr({
             // anchorX: 0,
             // anchorY: 0,
@@ -75,12 +73,8 @@ var ScreenHome = cc.Layer.extend({
         this._background = Background.getOrCreate(homeLayer);
         this._backgroundWidth = this._background.width;
 
-        this._ground = cc.Sprite("res/fiftybird/pipe.png");
-        this._ground.attr({
-            anchorX: 0,
-            anchorY: 0,
-        })
-        this.addChild(this._ground, 1);
+        this._ground = Ground.getOrCreate(homeLayer);
+
     },
 
     _counter: function() {
@@ -119,36 +113,40 @@ var ScreenHome = cc.Layer.extend({
     movingBackground: function(dt) {
         var movingDist = 16 * dt * GC.SCROLL_SPEED;       // background's moving rate is 16 pixel per second
 
-        var locGroundWidth = this._backgroundWidth;
-        var locBackground = this._background;
-        var currPosX = locBackground.x - movingDist;
-        var locBackgroundRe = this._backgroundRe;
+        var bgWidth = this._backgroundWidth;
+        var bg = this._background;
+        var currPosX = bg.x - movingDist;
+        var bgRe = this._backgroundRe;
+
+        console.log(currPosX);
+        console.log(bgWidth);
+        console.log(winSize.width);
 
         // check if needed to create a new background
-        if(locGroundWidth + currPosX <= winSize.width){
-            if(locBackgroundRe != null)
+        if(bgWidth + currPosX <= winSize.width){
+            if(bgRe != null)
                 throw "The memory is leaking at moving background";
 
             // Recycled
-            locBackgroundRe = this._background;
+            bgRe = this._background;
             this._backgroundRe = this._background;
 
             //create a new background
-            this._background = Background.getOrCreate();
-            locBackground = this._background;
-            locBackground.x = currPosX + locGroundWidth - 5;
+            this._background = Background.getOrCreate(playLayer);
+            bg = this._background;
+            bg.x = currPosX + bgWidth ;
         } else
-            locBackground.x = currPosX;
+            bg.x = currPosX;
 
-        if(locBackgroundRe){
+        if(bgRe){
             //locBackgroundRe
-            currPosX = locBackgroundRe.x - movingDist;
-            locBackgroundRe.x = currPosX
-            if(currPosX + locGroundWidth < 0){
-                locBackgroundRe.destroy();
+            currPosX = bgRe.x - movingDist;
+            bgRe.x = currPosX
+            if(currPosX + bgWidth < 0){
+                bgRe.destroy();
                 this._backgroundRe = null;
             } else
-                locBackgroundRe.x = currPosX;
+                bgRe.x = currPosX;
         }
     },
 
@@ -157,6 +155,8 @@ var ScreenHome = cc.Layer.extend({
     },
 
     onSelectPlay: function () {
-        fr.view(ScreenPlay)
+        var scene = new cc.Scene();
+        scene.addChild(new ScreenPlay());
+        cc.director.runScene(new cc.TransitionFade(1.2, scene));
     },
 })
