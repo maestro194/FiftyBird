@@ -25,7 +25,6 @@ var CountDown = cc.Layer.extend({
             this.cnt--;
             this._title.setString(this.cnt);
         }
-        console.log(this.cnt);
     },
     initTitle: function () {
         this._title = new ccui.Text(this.cnt, res.font, 64);

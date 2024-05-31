@@ -2,7 +2,7 @@
     "project_type": "javascript",
     "debugMode": 1,
     "showFPS": true,
-    "frameRate": 10000,
+    "frameRate": 1000,
     "id": "gameCanvas",
     "renderMode": 0,
     "engineDir": "frameworks/cocos2d-html5",
@@ -67,19 +67,19 @@
         "src/base/Resource.js",
         "src/base/UIFactory.js",
 
-        "src/fiftybird/ScreenHome.js",
-        "src/fiftybird/CountDown.js",
-        "src/fiftybird/ScreenPlay.js",
-        "src/fiftybird/GameOver.js",
-        "src/fiftybird/Resources.js",
-        "src/fiftybird/GameController.js",
+        "src/fiftybird/config/GameConfig.js",
 
         "src/fiftybird/sprite/Background.js",
         "src/fiftybird/sprite/Bird.js",
         "src/fiftybird/sprite/Pipe.js",
         "src/fiftybird/sprite/Ground.js",
 
-        "src/fiftybird/config/GameConfig.js"
+        "src/fiftybird/ScreenHome.js",
+        "src/fiftybird/CountDown.js",
+        "src/fiftybird/ScreenPlay.js",
+        "src/fiftybird/GameOver.js",
+        "src/fiftybird/Resources.js",
+        "src/fiftybird/GameController.js"
 
     ]
 }

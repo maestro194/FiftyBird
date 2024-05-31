@@ -1,15 +1,12 @@
 
 var GC = GC || {};
-var PLAY = 1;
-var COUNT = 2
-var OVER = 3;
 var MAX_CONTAINT_WIDTH = 20;
 var MAX_CONTAINT_HEIGHT = 20;
 
 var playLayer;
 
 var ScreenPlay = cc.Layer.extend({
-    _state: COUNT,
+    _state: GC.GAME_STATE.COUNT,
     _background: null,
     _backgroundWidth: 0,
     _backgroundRe: null,
@@ -20,6 +17,7 @@ var ScreenPlay = cc.Layer.extend({
     _pipeTimer: 0,
     _time: 0,
     _bird: null,
+    _score: null,
     score: 0,
     yVelocity: 0,
     gravity: 50,
@@ -30,7 +28,7 @@ var ScreenPlay = cc.Layer.extend({
     },
 
     init: function() {
-        this._state = PLAY;
+        this._state = GC.GAME_STATE.PLAY;
 
         winSize = cc.director.getWinSize();
 
@@ -60,11 +58,13 @@ var ScreenPlay = cc.Layer.extend({
     update: function (dt) {
         if (gameController._state === GC.GAME_STATE.PLAY) {
             this.movingBackground(dt);
+            this.movingGround(dt);
             this.gravityMove(dt);
             this.spawnPipe(dt);
             this.movePipe(dt);
             this.checkCollision();
             this._time += dt;
+            this._score.visible = true;
         }
     },
 
@@ -77,6 +77,14 @@ var ScreenPlay = cc.Layer.extend({
 
         this._bird = Bird.create(playLayer);
 
+        this._score = new ccui.Text(this.score, res.flappy_ttf, 64);
+        this._score.attr({
+            x: GC.SCOREX,
+            y: GC.SCOREY,
+            visible: false
+        })
+        this._score.enableOutline(cc.color(0, 0, 0), 4);
+        this.addChild(this._score, 1000);
     },
 
     checkCollision: function () {
@@ -91,6 +99,10 @@ var ScreenPlay = cc.Layer.extend({
             if (this.collide(bird, pipe)) {
                 this.onGameOver();
             }
+            if (pipe.x < bird.x && !pipe.passed) {
+                this.scoreCounting();
+                pipe.passed = true;
+            }
         }
 
         // ground - bird
@@ -100,48 +112,64 @@ var ScreenPlay = cc.Layer.extend({
     },
 
     movingBackground: function(dt) {
-        var movingDist = 16 * dt * GC.SCROLL_SPEED;       // background's moving rate is 16 pixel per second
+        let movingDist = dt * GC.BACKGROUND_SPEED;
+        let filled = false;
+        let bgWidth = GC.BG_WIDTH;
 
-        var locGroundWidth = this._backgroundWidth;
-        var locBackground = this._background;
-        var currPosX = locBackground.x - movingDist;
-        var locBackgroundRe = this._backgroundRe;
+        GC.CONTAINER.BACKGROUNDS.forEach(bg => {
+            if (bg.active === true){
+                let newPosX = bg.x - movingDist;
+                if (newPosX + bgWidth * GC.SCALE <= 0) {
+                    bg.destroy();
+                } else {
+                    bg.x = newPosX;
+                }
+                if (newPosX + bgWidth * (GC.SCALE - GC.SCALE_DELTA) >= winSize.width) {
+                    filled = true;
+                }
+            }
+        })
 
-        // check if needed to create a new background
-        if(locGroundWidth + currPosX <= winSize.width){
-            if(locBackgroundRe != null)
-                throw "The memory is leaking at moving background";
+        if (!filled) {
+            let bg = Background.getOrCreate(homeLayer);
+            bg.x = winSize.width;
+        }
+    },
 
-            // Recycled
-            locBackgroundRe = this._background;
-            this._backgroundRe = this._background;
+    movingGround: function(dt) {
+        let movingDist = dt * GC.GROUND_SPEED;
+        let filled = false;
+        let gWidth = GC.G_WIDTH;
 
-            //create a new background
-            this._background = Background.getOrCreate(playLayer);
-            locBackground = this._background;
-            locBackground.x = currPosX + locGroundWidth - 5;
-        } else
-            locBackground.x = currPosX;
+        GC.CONTAINER.GROUNDS.forEach(g => {
+            if (g.active === true){
+                let newPosX = g.x - movingDist;
+                if (newPosX + gWidth * GC.SCALE <= 0) {
+                    g.destroy();
+                } else {
+                    g.x = newPosX;
+                }
+                if (newPosX + gWidth * (GC.SCALE - GC.SCALE_DELTA) >= winSize.width) {
+                    filled = true;
+                }
+            }
+        })
 
-        if(locBackgroundRe){
-            //locBackgroundRe
-            currPosX = locBackgroundRe.x - movingDist;
-            locBackgroundRe.x = currPosX
-            if(currPosX + locGroundWidth < 0){
-                locBackgroundRe.destroy();
-                this._backgroundRe = null;
-            } else
-                locBackgroundRe.x = currPosX;
+        if (!filled) {
+            let g = Ground.getOrCreate(homeLayer);
+            g.x = winSize.width;
         }
     },
 
     spawnPipe: function (dt) {
-        this._pipeTimer += dt * GC.SCROLL_SPEED * 10;
-        if (this._pipeTimer >= GC.PIPE_WIDTH) {
+        this._pipeTimer += dt * GC.SCROLL_SPEED;
+        if (this._pipeTimer >= GC.PIPE_SPEED) {
             this._pipeTimer = 0;
-            var pipeUp = Pipe.getOrCreate(playLayer);
-            var pipeDown = Pipe.getOrCreate(playLayer);
-            pipeUp.flip();
+            var pipeTop = Pipe.getOrCreate(playLayer);
+            var pipeBot = Pipe.getOrCreate(playLayer);
+            pipeTop.flip();
+            pipeBot.randomY();
+            pipeTop.y = pipeBot.y + GC.PIPE_GAP + pipeBot.height * GC.SCALE_PIPE;
         }
     },
 
@@ -149,12 +177,17 @@ var ScreenPlay = cc.Layer.extend({
         GC.CONTAINER.PIPES.forEach(pipe => {
             if (pipe.active) {
                 pipe.x -= dt * GC.PIPE_SPEED;
-                if (pipe.x < -pipe.width) {
+                if (pipe.x < -pipe.width * GC.SCALE_PIPE) {
                     pipe.x = GC.PIPEX;
                     pipe.active = false;
                 }
             }
         })
+    },
+
+    scoreCounting: function () {
+        this.score += 0.5;
+        this._score.setString(this.score);
     },
 
     gravityMove: function (dt) {
@@ -163,7 +196,6 @@ var ScreenPlay = cc.Layer.extend({
 
     addKeyboardListener:function(){
         if (cc.sys.capabilities.hasOwnProperty('keyboard')) {
-            const self = this;
             cc.eventManager.addListener({
                 event: cc.EventListener.KEYBOARD,
                 onKeyPressed: function (keyCode) {
@@ -175,10 +207,15 @@ var ScreenPlay = cc.Layer.extend({
 
             }, this)
             this.schedule(function(){
-                if (self._state === PLAY) {
+                if (gameController._state === GC.GAME_STATE.PLAY) {
                     if(GC.KEYS[cc.KEY.space]) {
                         GC.KEYS[cc.KEY.space] = false;
                         this._bird.jump();
+                        // this.onBirdJumpEffect();
+                    }
+                    if(GC.KEYS[cc.KEY.p]) {
+                        GC.KEYS[cc.KEY.p] = false;
+                        gameController._state = GC.GAME_STATE.PAUSE;
                     }
                 }
             }, 0)
@@ -196,13 +233,14 @@ var ScreenPlay = cc.Layer.extend({
     },
 
     onGameOver: function () {
-        // this.onExit();
-        var scene = new cc.Scene();
-        scene.addChild(new GameOver());
+        overLayer.setVisible(true);
+        this._score.setVisible(false);
         gameController._state = GC.GAME_STATE.OVER;
-        setTimeout(() => {}, 1500);
-        // gameController.setCurScene(new cc.TransitionFade(1.2, scene));
-        gameController.setCurScene(scene);
+    },
+
+    onBirdJumpEffect: function () {
+        // play sound effect
+        var sound = cc.audioEngine.playEffect(res.jump_wav);
     },
 
     onEnter: function () {

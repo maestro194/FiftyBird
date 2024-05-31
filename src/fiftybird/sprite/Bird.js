@@ -32,7 +32,8 @@ var Bird = cc.Sprite.extend({
     },
 
     collideRect:function (x, y) {
-        var w = this.width, h = this.height;
+        let w = this.width * GC.SCALE_BIRD;
+        let h = this.height * GC.SCALE_BIRD;
         return cc.rect(x, y, w, h);
     },
 });
@@ -41,6 +42,6 @@ Bird.create = function (layer) {
     var bird = new Bird();
     bird.active = true;
     bird.visible = true;
-    layer.addChild(bird, 10);
+    layer.addChild(bird, 7);
     return bird;
 };

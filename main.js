@@ -1,8 +1,8 @@
 
 var gv = gv || {};
 
-var DESIGN_RESOLUTION_WIDTH = 1280;
-var DESIGN_RESOLUTION_HEIGHT = 720;
+var DESIGN_RESOLUTION_WIDTH = 1024;
+var DESIGN_RESOLUTION_HEIGHT = 768;
 cc.game.onStart = function () {
     if(!cc.sys.isNative) {
         if (!cc.sys.isNative && document.getElementById("cocosLoading")) //If referenced loading.js, please remove it
@@ -40,8 +40,7 @@ cc.game.initScreen = function()
     gv.gameClient = new GameClient();
     gv.poolObjects = new PoolObject();
     //modules
-	
-	cc.log("test 2");
+
     //add search paths
     jsb.fileUtils.addSearchPath("res", true);
     jsb.fileUtils.addSearchPath(fr.NativeService.getFolderUpdateAssets() + "/res", true);
@@ -50,7 +49,7 @@ cc.game.startGame = function()
 {
     // fr.view(ScreenHome);
     gameController = new GameController();
-    gameController.setCurScene(new cc.Scene());
-    gameController.addChild(new ScreenHome())
+    // gameController.setCurScene(new cc.Scene());
+    // gameController.addChild(new ScreenHome())
 }
 cc.game.run();

@@ -3,11 +3,11 @@ var Background = cc.Sprite.extend({
     active:true,
     ctor:function () {
         this._super(res.background_png);
-        var rect = cc.rect(0, 0, this.width, this.height);
+        var rect = cc.rect(0, 0, this.width - 1, this.height);
         this.setTextureRect(rect);
         this.anchorX = 0;
         this.anchorY = 0;
-        this.setPosition(winSize.width - this.width, 0);
+        this.setPosition(0, 0);
         this.scale = GC.SCALE;
     },
     destroy:function () {
@@ -38,10 +38,10 @@ Background.getOrCreate = function (layer) {
 };
 
 
-Background.preSet = function (state) {
+Background.preSet = function (layer) {
     var background = null;
-    for (var i = 0; i < 2; i++) {
-        background = Background.create(state);
+    for (var i = 0; i < 4; i++) {
+        background = Background.create(layer);
         background.visible = false;
         background.active = false;
     }

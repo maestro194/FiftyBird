@@ -21,15 +21,15 @@ var GameClient = cc.Class.extend(
             return true;
         },
         loadConfig: function () {
-            var fileName = "ipConfig.json";
-            var jsonData = cc.loader.getRes(fileName);
-            if (jsonData == null) {
-                cc.log("Load ip config errorr");
-            }else
-            {
-                this._serverName = jsonData.server;
-                this._port = jsonData.port;
-            }
+            // var fileName = "ipConfig.json";
+            // var jsonData = cc.loader.getRes(fileName);
+            // if (jsonData == null) {
+            //     cc.log("Load ip config errorr");
+            // }else
+            // {
+            //     this._serverName = jsonData.server;
+            //     this._port = jsonData.port;
+            // }
         },
         getNetwork: function () {
             return this._tcpClient;

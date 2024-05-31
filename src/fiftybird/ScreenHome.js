@@ -1,15 +1,12 @@
 
 var GC = GC || {};
 var HOME = 0;
-var PLAY = 1;
 
 var homeLayer;
 
 var ScreenHome = cc.Layer.extend({
     _state: HOME,
     _background: null,
-    _backgroundWidth: 0,
-    _backgroundRe: null,
     _ground: null,
     _time: 0,
 
@@ -19,8 +16,6 @@ var ScreenHome = cc.Layer.extend({
     },
 
     init: function() {
-        this._state = HOME;
-
         GC.CONTAINER.BACKGROUNDS = [];
         GC.KEYS = [];
 
@@ -34,6 +29,7 @@ var ScreenHome = cc.Layer.extend({
 
         // preset
         Background.preSet(homeLayer);
+        Ground.preSet(homeLayer);
 
         this.initTitle();
         this.initBackground();
@@ -42,12 +38,9 @@ var ScreenHome = cc.Layer.extend({
         return true;
     },
     update: function(dt) {
-        if (this.getParent()._state === GC.GAME_STATE.HOME) {
+        if (gameController._state === GC.GAME_STATE.HOME) {
             this.movingBackground(dt);
-            // this.checkIsCollide();
-            // this.removeInactiveUnit(dt);
-            // this.checkIsReborn();
-            // this.updateUI();
+            this.movingGround(dt);
         }
     },
 
@@ -73,10 +66,7 @@ var ScreenHome = cc.Layer.extend({
 
     initBackground: function() {
         this._background = Background.getOrCreate(homeLayer);
-        this._backgroundWidth = this._background.width;
-
         this._ground = Ground.getOrCreate(homeLayer);
-
     },
 
     _counter: function() {
@@ -88,9 +78,7 @@ var ScreenHome = cc.Layer.extend({
     addKeyboardListener:function(){
         //Add code here
         if (cc.sys.capabilities.hasOwnProperty('keyboard')) {
-            const self = this;
-            // a moving system so that anytime a key is pressed add the key to the keydown,
-            // the ship can move in multiple directions at once and it moved if at least 1 key is pressed
+
             cc.eventManager.addListener({
                 event: cc.EventListener.KEYBOARD,
                 onKeyPressed: function (keyCode) {
@@ -102,9 +90,9 @@ var ScreenHome = cc.Layer.extend({
 
             }, this)
             this.schedule(function(){
-                if (self._state === HOME) {
-                    if(GC.KEYS[cc.KEY.space]) {
-                        self.onSelectPlay();
+                if (gameController._state === HOME) {
+                    if(GC.KEYS[cc.KEY.enter]) {
+                        this.onSelectPlay();
                     }
                 }
             }, 0)
@@ -112,42 +100,52 @@ var ScreenHome = cc.Layer.extend({
     },
 
     movingBackground: function(dt) {
-        var movingDist = 16 * dt * GC.SCROLL_SPEED;       // background's moving rate is 16 pixel per second
+        let movingDist = dt * GC.BACKGROUND_SPEED;
+        let filled = false;
+        let bgWidth = GC.BG_WIDTH;
 
-        var bgWidth = this._backgroundWidth;
-        var bg = this._background;
-        var currPosX = bg.x - movingDist;
-        var bgRe = this._backgroundRe;
+        GC.CONTAINER.BACKGROUNDS.forEach(bg => {
+            if (bg.active === true){
+                let newPosX = bg.x - movingDist;
+                if (newPosX + bgWidth * GC.SCALE <= 0) {
+                    bg.destroy();
+                } else {
+                    bg.x = newPosX;
+                }
+                if (newPosX + bgWidth * (GC.SCALE - GC.SCALE_DELTA) >= winSize.width) {
+                    filled = true;
+                }
+            }
+        })
 
-        // console.log(currPosX);
-        // console.log(bgWidth);
-        // console.log(winSize.width);
+        if (!filled) {
+            let bg = Background.getOrCreate(homeLayer);
+            bg.x = winSize.width;
+        }
+    },
 
-        // check if needed to create a new background
-        if(bgWidth + currPosX <= winSize.width){
-            if(bgRe != null)
-                throw "The memory is leaking at moving background";
+    movingGround: function(dt) {
+        let movingDist = dt * GC.GROUND_SPEED;
+        let filled = false;
+        let gWidth = GC.G_WIDTH;
 
-            // Recycled
-            bgRe = this._background;
-            this._backgroundRe = this._background;
+        GC.CONTAINER.GROUNDS.forEach(g => {
+            if (g.active === true){
+                let newPosX = g.x - movingDist;
+                if (newPosX + gWidth * GC.SCALE <= 0) {
+                    g.destroy();
+                } else {
+                    g.x = newPosX;
+                }
+                if (newPosX + gWidth * (GC.SCALE - GC.SCALE_DELTA) >= winSize.width) {
+                    filled = true;
+                }
+            }
+        })
 
-            //create a new background
-            this._background = Background.getOrCreate(playLayer);
-            bg = this._background;
-            bg.x = currPosX + bgWidth ;
-        } else
-            bg.x = currPosX;
-
-        if(bgRe){
-            //locBackgroundRe
-            currPosX = bgRe.x - movingDist;
-            bgRe.x = currPosX
-            if(currPosX + bgWidth < 0){
-                bgRe.destroy();
-                this._backgroundRe = null;
-            } else
-                bgRe.x = currPosX;
+        if (!filled) {
+            let g = Ground.getOrCreate(homeLayer);
+            g.x = winSize.width;
         }
     },
 
@@ -160,6 +158,7 @@ var ScreenHome = cc.Layer.extend({
         var scene = new cc.Scene();
         scene.addChild(new ScreenPlay());
         scene.addChild(new CountDown());
+        scene.addChild(new GameOver());
 
         gameController._state = GC.GAME_STATE.COUNT;
         gameController.setCurScene(new cc.TransitionFade(1.2, scene));

@@ -21,7 +21,9 @@ var GameController = cc.Class.extend({
     },
 
     init: function () {
-        return true;
+        let scene = new cc.Scene();
+        scene.addChild(new ScreenHome());
+        this.setCurScene(scene);
     },
 
     setCurScene: function (s) {

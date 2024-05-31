@@ -2,6 +2,7 @@
 var Pipe = cc.Sprite.extend({
     active: true,
     speed: GC.PIPE_SPEED,
+    passed: false,
 
     ctor: function() {
         this._super(res.pipe_png);
@@ -10,6 +11,7 @@ var Pipe = cc.Sprite.extend({
         this.setPosition(GC.PIPEX, GC.PIPEY);
         this.anchorX = 0;
         this.anchorY = 0;
+        this.scale = GC.SCALE_PIPE;
     },
     destroy: function() {
         this.visible = false;
@@ -22,10 +24,15 @@ var Pipe = cc.Sprite.extend({
     },
     flip: function() {
         this.setFlippedY(true);
-        this.y = GC.HEIGHT - this.height;
+    },
+    randomY: function() {
+        let randomizer = Math.floor(Math.random() * winSize.height / 3);
+        randomizer -= GC.PIPE_GAP / 2 + this.height;
+        this.y = randomizer;
     },
     collideRect:function (x, y) {
-        var w = this.width, h = this.height;
+        let w = this.width * GC.SCALE_PIPE;
+        let h = this.height * GC.SCALE_PIPE;
         return cc.rect(x, y, w, h);
     },
 })
@@ -44,7 +51,7 @@ Pipe.getOrCreate = function (layer) {
         if(selChild.active === false) {
             selChild.active = true;
             selChild.visible = true;
-
+            selChild.passed = false;
             return selChild;
         }
     }
@@ -58,5 +65,6 @@ Pipe.preSet = function (layer) {
         pipe = Pipe.create(layer);
         pipe.visible = false;
         pipe.active = false;
+        pipe.passed = false;
     }
 }
