@@ -8,9 +8,6 @@ GC.GAME_STATE = {
     OVER: 3
 };
 
-// font
-GC.FONT = "fiftybird/flappy.ttf";
-
 // score
 GC.SCORE = 0;
 
@@ -42,8 +39,8 @@ GC.HEIGHT = 768;
 GC.SCALE = 2.55;
 
 // Play
-GC.BIRDX = 256;
-GC.BIRDY = 480;
+GC.BIRDX = winSize.width / 3;
+GC.BIRDY = winSize.height / 2;
 GC.SCALE_BIRD = 1.25;
 GC.PIPEX = 1024;
 GC.PIPEY = 0;

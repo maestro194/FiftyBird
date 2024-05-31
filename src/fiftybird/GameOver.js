@@ -79,7 +79,8 @@ var GameOver = cc.Layer.extend({
 
     onReplay: function () {
         var scene = new cc.Scene();
+        scene.addChild(new CountDown());
         scene.addChild(new ScreenPlay());
-        cc.director.runScene(new cc.TransitionFade(1.2, scene));
+        gameController.setCurScene(new cc.TransitionFade(1.2, scene));
     }
 })

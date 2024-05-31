@@ -48,6 +48,9 @@ cc.game.initScreen = function()
 }
 cc.game.startGame = function()
 {
-    fr.view(ScreenHome);
+    // fr.view(ScreenHome);
+    gameController = new GameController();
+    gameController.setCurScene(new cc.Scene());
+    gameController.addChild(new ScreenHome())
 }
 cc.game.run();

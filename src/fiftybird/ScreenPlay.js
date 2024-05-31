@@ -40,10 +40,6 @@ var ScreenPlay = cc.Layer.extend({
         GC.CONTAINER.PIPES = [];
         GC.KEYS = [];
 
-        // schedule
-        this.scheduleUpdate();
-        // this.schedule(this.update, 0.016);
-
         playLayer = this;
 
         // preset
@@ -52,18 +48,24 @@ var ScreenPlay = cc.Layer.extend({
         // Bird.preSet();
         Pipe.preSet(playLayer);
 
+        // schedule
+        this.scheduleUpdate();
+        // this.schedule(this.update, 0.016);
+
         // background
         this.initBackground();
         this.addKeyboardListener();
     },
 
     update: function (dt) {
-        this.movingBackground(dt);
-        this.gravityMove(dt);
-        this.spawnPipe(dt);
-        this.movePipe(dt);
-        this.checkCollision();
-        this._time += dt;
+        if (gameController._state === GC.GAME_STATE.PLAY) {
+            this.movingBackground(dt);
+            this.gravityMove(dt);
+            this.spawnPipe(dt);
+            this.movePipe(dt);
+            this.checkCollision();
+            this._time += dt;
+        }
     },
 
     initBackground: function () {
@@ -81,6 +83,7 @@ var ScreenPlay = cc.Layer.extend({
         let pipe = null;
         let bird = this._bird;
 
+        // pipe - bird
         for(let i = 0; i < GC.CONTAINER.PIPES.length; i ++) {
             pipe = GC.CONTAINER.PIPES[i];
             if (!pipe.active)
@@ -89,13 +92,13 @@ var ScreenPlay = cc.Layer.extend({
                 this.onGameOver();
             }
         }
-    },
 
-    _counter: function() {
-        if (this._state === GC.GAME_STATE.PLAY) {
-            this._time ++;
+        // ground - bird
+        if (bird.y < this._ground.height) {
+            this.onGameOver();
         }
     },
+
     movingBackground: function(dt) {
         var movingDist = 16 * dt * GC.SCROLL_SPEED;       // background's moving rate is 16 pixel per second
 
@@ -192,12 +195,18 @@ var ScreenPlay = cc.Layer.extend({
         return cc.rectIntersectsRect(aRect, bRect);
     },
 
+    onGameOver: function () {
+        // this.onExit();
+        var scene = new cc.Scene();
+        scene.addChild(new GameOver());
+        gameController._state = GC.GAME_STATE.OVER;
+        setTimeout(() => {}, 1500);
+        // gameController.setCurScene(new cc.TransitionFade(1.2, scene));
+        gameController.setCurScene(scene);
+    },
+
     onEnter: function () {
         this._super();
     },
-    onGameOver: function () {
-        var scene = new cc.Scene();
-        scene.addChild(new GameOver());
-        cc.director.runScene(new cc.TransitionFade(1.5, scene));
-    }
+
 })

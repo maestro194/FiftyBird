@@ -21,7 +21,7 @@ var Bird = cc.Sprite.extend({
         this.speed += dt * GC.SPEED_MULTIPLIER;
         if (this.speed > GC.GRAVITY)
             this.speed = GC.GRAVITY;
-        console.log(this.speed);
+        // console.log(this.speed);
 
         this.y -= dt * this.speed;
         if (this.y < 0)

@@ -42,11 +42,13 @@ var ScreenHome = cc.Layer.extend({
         return true;
     },
     update: function(dt) {
-        this.movingBackground(dt);
-        // this.checkIsCollide();
-        // this.removeInactiveUnit(dt);
-        // this.checkIsReborn();
-        // this.updateUI();
+        if (this.getParent()._state === GC.GAME_STATE.HOME) {
+            this.movingBackground(dt);
+            // this.checkIsCollide();
+            // this.removeInactiveUnit(dt);
+            // this.checkIsReborn();
+            // this.updateUI();
+        }
     },
 
     initTitle: function() {
@@ -103,7 +105,6 @@ var ScreenHome = cc.Layer.extend({
                 if (self._state === HOME) {
                     if(GC.KEYS[cc.KEY.space]) {
                         self.onSelectPlay();
-                        self._state = PLAY;
                     }
                 }
             }, 0)
@@ -155,8 +156,12 @@ var ScreenHome = cc.Layer.extend({
     },
 
     onSelectPlay: function () {
+        this.stopAllActions();
         var scene = new cc.Scene();
         scene.addChild(new ScreenPlay());
-        cc.director.runScene(new cc.TransitionFade(1.2, scene));
+        scene.addChild(new CountDown());
+
+        gameController._state = GC.GAME_STATE.COUNT;
+        gameController.setCurScene(new cc.TransitionFade(1.2, scene));
     },
 })
