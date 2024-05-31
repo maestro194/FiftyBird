@@ -50,7 +50,7 @@ var ScreenHome = cc.Layer.extend({
     },
 
     initTitle: function() {
-        var title = new ccui.Text(GC.TITLE_HOME, res.font, 64);
+        var title = new ccui.Text(GC.TITLE_HOME, res.flappy_ttf, 64);
         title.attr({
             // anchorX: 0,
             // anchorY: 0,
@@ -59,7 +59,7 @@ var ScreenHome = cc.Layer.extend({
         })
         this.addChild(title, 1000);
 
-        var enter = new ccui.Text(GC.ENTER, res.font, 36);
+        var enter = new ccui.Text(GC.ENTER, res.flappy_ttf, 36);
         enter.attr({
             // anchorX: 0,
             // anchorY: 0,

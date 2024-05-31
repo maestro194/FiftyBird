@@ -33,8 +33,8 @@ GC.CONTAINER = {
 GC.KEYS = []
 
 // Home
-GC.TITLE_HOME = "FIFTY BIRD";
-GC.ENTER = "PRESS ENTER";
+GC.TITLE_HOME = "Fifty Bird";
+GC.ENTER = "Press Enter";
 GC.TITLEX = winSize.width / 2;
 GC.TITLEY = winSize.height * 2 / 3;
 GC.WIDTH = 1024;
