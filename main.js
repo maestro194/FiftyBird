@@ -1,7 +1,7 @@
 
 var gv = gv || {};
 
-var DESIGN_RESOLUTION_WIDTH = 1024;
+var DESIGN_RESOLUTION_WIDTH = 1280;
 var DESIGN_RESOLUTION_HEIGHT = 768;
 cc.game.onStart = function () {
     if(!cc.sys.isNative) {

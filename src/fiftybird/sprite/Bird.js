@@ -26,9 +26,15 @@ var Bird = cc.Sprite.extend({
         this.y -= dt * this.speed;
         if (this.y < 0)
             this.y = 0;
+        this.rotate();
     },
     jump: function () {
         this.speed = GC.JUMP_SPEED; // JUMP_SPEED
+    },
+
+    rotate: function() {
+        this.rotation = this.speed / GC.GRAVITY * 90;
+        this.setRotation(this.rotation);
     },
 
     collideRect:function (x, y) {

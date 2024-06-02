@@ -73,6 +73,8 @@
         "src/fiftybird/sprite/Bird.js",
         "src/fiftybird/sprite/Pipe.js",
         "src/fiftybird/sprite/Ground.js",
+        "src/fiftybird/sprite/ScoreBoard.js",
+        "src/fiftybird/sprite/Medal.js",
 
         "src/fiftybird/ScreenHome.js",
         "src/fiftybird/CountDown.js",

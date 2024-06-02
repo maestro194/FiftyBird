@@ -7,6 +7,7 @@ var GameOver = cc.Layer.extend({
     _title: null,
     _score: null,
     _scoreboard: null,
+    _medal: null,
 
     ctor: function () {
         this._super();
@@ -36,12 +37,17 @@ var GameOver = cc.Layer.extend({
         })
         this.addChild(this._title, 99);
 
-        this._score = new ccui.Text("Score: " + playLayer.score, res.flappy_ttf, 48)
+        this._score = new ccui.Text(playLayer.score, res.flappy_ttf, 64)
         this._score.attr({
-            x: GC.TITLEX,
-            y: GC.TITLEY - 80,
+            x: GC.SCOREOVERX,
+            y: GC.SCOREOVERY,
         })
+        this._score.enableOutline(cc.color(0, 0, 0), 3);
         this.addChild(this._score, 99);
+
+        this._scoreboard = ScoreBoard.create(overLayer);
+
+        this._medal = Medal.create(overLayer, playLayer.score);
     },
 
     addKeyboardListener:function(){

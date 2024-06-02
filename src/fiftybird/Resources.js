@@ -11,6 +11,7 @@ var res = {
     silver_png: 'res/fiftybird/silver.png',
     gold_png: 'res/fiftybird/gold.png',
     platinum_png: 'res/fiftybird/platinum.png',
+    invisible_png: 'res/fiftybird/invisible.png',
 
     jump_wav: 'res/fiftybird/jump.mp3',
     hurt_wav: 'res/fiftybird/hurt.wav',

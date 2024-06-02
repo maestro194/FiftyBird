@@ -1,7 +1,7 @@
 
 var Pipe = cc.Sprite.extend({
     active: true,
-    speed: GC.PIPE_SPEED,
+    speed: GC.PIPE_INTERVAL,
     passed: false,
 
     ctor: function() {

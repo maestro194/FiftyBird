@@ -39,7 +39,7 @@ GC.PAUSE_TEXT = "Press P to continue";
 GC.TITLE_HOME = "Fifty Bird";
 GC.ENTER = "Press Enter";
 GC.TITLEX = winSize.width / 2;
-GC.TITLEY = winSize.height * 2 / 3;
+GC.TITLEY = winSize.height * 3 / 4;
 GC.WIDTH = 1024;
 GC.HEIGHT = 768;
 GC.SCALE = 2.4;
@@ -65,3 +65,9 @@ GC.PIPE_WIDTH = 420;
 
 // over
 GC.TITLE_OVER = "GAME OVER";
+GC.SCOREBOARDX = winSize.width / 2;
+GC.SCOREBOARDY = winSize.height / 2;
+GC.SCOREOVERX = winSize.width / 2 * 1.31;
+GC.SCOREOVERY = winSize.height / 2;
+GC.MEDALX = winSize.width / 2 * 0.72;
+GC.MEDALY = winSize.height / 2 * 0.95;

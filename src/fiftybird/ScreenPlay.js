@@ -56,7 +56,6 @@ var ScreenPlay = cc.Layer.extend({
         this.initBackground();
         this.addKeyboardListener();
     },
-
     update: function (dt) {
         if (gameController._state === GC.GAME_STATE.PLAY) {
             this.movingBackground(dt);
@@ -76,7 +75,6 @@ var ScreenPlay = cc.Layer.extend({
             this._pause.setVisible(false);
         }
     },
-
     initBackground: function () {
         this._background = Background.getOrCreate(playLayer);
         this._backgroundWidth = this._background.width;
@@ -104,7 +102,6 @@ var ScreenPlay = cc.Layer.extend({
         this._pause.enableOutline(cc.color(0, 0, 0), 2);
         this.addChild(this._pause, 1000);
     },
-
     checkCollision: function () {
         let pipe = null;
         let bird = this._bird;
@@ -128,7 +125,6 @@ var ScreenPlay = cc.Layer.extend({
             this.onGameOver();
         }
     },
-
     movingBackground: function(dt) {
         let movingDist = dt * GC.BACKGROUND_SPEED;
         let filled = false;
@@ -153,7 +149,6 @@ var ScreenPlay = cc.Layer.extend({
             bg.x = winSize.width;
         }
     },
-
     movingGround: function(dt) {
         let movingDist = dt * GC.GROUND_SPEED;
         let filled = false;
@@ -178,7 +173,6 @@ var ScreenPlay = cc.Layer.extend({
             g.x = winSize.width;
         }
     },
-
     spawnPipe: function (dt) {
         this._pipeTimer += dt * GC.SCROLL_SPEED;
         if (this._pipeTimer >= this._interval) {
@@ -202,7 +196,6 @@ var ScreenPlay = cc.Layer.extend({
             this._interval = GC.PIPE_MIN_INTERVAL + randomizer;
         }
     },
-
     movePipe: function (dt) {
         GC.CONTAINER.PIPES.forEach(pipe => {
             if (pipe.active) {
@@ -214,16 +207,13 @@ var ScreenPlay = cc.Layer.extend({
             }
         })
     },
-
     scoreCounting: function () {
         this.score += 0.5;
         this._score.setString(this.score);
     },
-
     birdMove: function (dt) {
         this._bird.move(dt);
     },
-
     addKeyboardListener:function(){
         if (cc.sys.capabilities.hasOwnProperty('keyboard')) {
             cc.eventManager.addListener({
@@ -256,7 +246,6 @@ var ScreenPlay = cc.Layer.extend({
             }, 0)
         }
     },
-
     collide:function (a, b) {
         var ax = a.x, ay = a.y, bx = b.x, by = b.y;
         // if (Math.abs(ax - bx) > MAX_CONTAINT_WIDTH || Math.abs(ay - by) > MAX_CONTAINT_HEIGHT)
@@ -266,21 +255,17 @@ var ScreenPlay = cc.Layer.extend({
         var bRect = b.collideRect(bx, by);
         return cc.rectIntersectsRect(aRect, bRect);
     },
-
     onGameOver: function () {
         this._score.visible = false;
         overLayer.setVisible(true);
         overLayer.initTitle();
         gameController._state = GC.GAME_STATE.OVER;
     },
-
     onBirdJumpEffect: function () {
         // play sound effect
         var sound = cc.audioEngine.playEffect(res.jump_wav);
     },
-
     onEnter: function () {
         this._super();
     },
-
 })
