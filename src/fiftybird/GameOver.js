@@ -4,8 +4,9 @@ var OVER = 3;
 var overLayer;
 
 var GameOver = cc.Layer.extend({
-    _background: null,
-    _ground: null,
+    _title: null,
+    _score: null,
+    _scoreboard: null,
 
     ctor: function () {
         this._super();
@@ -23,28 +24,24 @@ var GameOver = cc.Layer.extend({
 
         // init
         // this.initBackground();
-        this.initTitle();
+        // this.initTitle();
         this.addKeyboardListener();
     },
 
-    // initBackground: function() {
-    //     this._background = Background.getOrCreate(overLayer);
-    //     this._ground = Ground.getOrCreate(overLayer);
-    // },
-
     initTitle: function () {
-        var title = new ccui.Text(GC.TITLE_OVER, res.flappy_ttf, 64);
-        title.attr({
+        this._title = new ccui.Text(GC.TITLE_OVER, res.flappy_ttf, 64);
+        this._title.attr({
             x: GC.TITLEX,
             y: GC.TITLEY,
         })
-        this.addChild(title, 1000);
-        var score = new ccui.Text("Score: " + playLayer.score, res.flappy_ttf, 48)
-        score.attr({
+        this.addChild(this._title, 99);
+
+        this._score = new ccui.Text("Score: " + playLayer.score, res.flappy_ttf, 48)
+        this._score.attr({
             x: GC.TITLEX,
             y: GC.TITLEY - 80,
         })
-        this.addChild(score, 1000);
+        this.addChild(this._score, 99);
     },
 
     addKeyboardListener:function(){
@@ -70,7 +67,6 @@ var GameOver = cc.Layer.extend({
     },
 
     onReplay: function () {
-        this.stopAllActions();
         var scene = new cc.Scene();
         scene.addChild(new ScreenPlay());
         scene.addChild(new CountDown());

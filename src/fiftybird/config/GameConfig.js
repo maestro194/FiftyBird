@@ -5,7 +5,8 @@ GC.GAME_STATE = {
     HOME: 0,
     COUNT: 1,
     PLAY: 2,
-    OVER: 3
+    OVER: 3,
+    PAUSE: 4,
 };
 
 // score
@@ -31,6 +32,9 @@ GC.SCROLL_SPEED = 160;
 GC.BACKGROUND_SPEED = 20;
 GC.GROUND_SPEED = 240;
 
+// Global
+GC.PAUSE_TEXT = "Press P to continue";
+
 // Home
 GC.TITLE_HOME = "Fifty Bird";
 GC.ENTER = "Press Enter";
@@ -53,7 +57,10 @@ GC.PIPEX = 1024;
 GC.PIPEY = 0;
 GC.SCALE_PIPE = 2;
 GC.PIPE_GAP = 256;
-GC.PIPE_SPEED = 280;
+GC.PIPE_MIN_GAP = 224;
+GC.PIPE_INTERVAL = 288;
+GC.PIPE_MIN_INTERVAL = 224;
+GC.PIPE_DELTA = 64;
 GC.PIPE_WIDTH = 420;
 
 // over

@@ -6,6 +6,7 @@ var res = {
     bird_png: 'res/fiftybird/bird.png',
     ground_png: 'res/fiftybird/ground.png',
     pipe_png: 'res/fiftybird/pipe.png',
+    scoreboard_png: 'res/fiftybird/scoreboard.png',
     bronze_png: 'res/fiftybird/bronze.png',
     silver_png: 'res/fiftybird/silver.png',
     gold_png: 'res/fiftybird/gold.png',

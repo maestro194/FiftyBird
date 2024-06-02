@@ -15,9 +15,11 @@ var ScreenPlay = cc.Layer.extend({
     _groundRe: null,
     _pipe: [],
     _pipeTimer: 0,
+    _interval: 0,
     _time: 0,
     _bird: null,
     _score: null,
+    _pause: null,
     score: 0,
     yVelocity: 0,
     gravity: 50,
@@ -59,12 +61,19 @@ var ScreenPlay = cc.Layer.extend({
         if (gameController._state === GC.GAME_STATE.PLAY) {
             this.movingBackground(dt);
             this.movingGround(dt);
-            this.gravityMove(dt);
+            this.birdMove(dt);
             this.spawnPipe(dt);
             this.movePipe(dt);
             this.checkCollision();
             this._time += dt;
-            this._score.visible = true;
+            this._score.setVisible(true);
+            this._pause.setVisible(false);
+        } else if (gameController._state === GC.GAME_STATE.PAUSE) {
+            this._score.setVisible(false);
+            this._pause.setVisible(true);
+        } else if (gameController._state === GC.GAME_STATE.OVER) {
+            this._score.setVisible(false);
+            this._pause.setVisible(false);
         }
     },
 
@@ -85,6 +94,15 @@ var ScreenPlay = cc.Layer.extend({
         })
         this._score.enableOutline(cc.color(0, 0, 0), 4);
         this.addChild(this._score, 1000);
+
+        this._pause = new ccui.Text(GC.PAUSE_TEXT, res.flappy_ttf, 48);
+        this._pause.attr({
+            x: GC.SCOREX,
+            y: GC.SCOREY,
+            visible: false,
+        })
+        this._pause.enableOutline(cc.color(0, 0, 0), 2);
+        this.addChild(this._pause, 1000);
     },
 
     checkCollision: function () {
@@ -163,20 +181,32 @@ var ScreenPlay = cc.Layer.extend({
 
     spawnPipe: function (dt) {
         this._pipeTimer += dt * GC.SCROLL_SPEED;
-        if (this._pipeTimer >= GC.PIPE_SPEED) {
+        if (this._pipeTimer >= this._interval) {
             this._pipeTimer = 0;
-            var pipeTop = Pipe.getOrCreate(playLayer);
-            var pipeBot = Pipe.getOrCreate(playLayer);
+            let pipeTop = Pipe.getOrCreate(playLayer);
+            let pipeBot = Pipe.getOrCreate(playLayer);
+            let randomizer;
+
+            /*
+             randomizing
+            */
+            // flip top pipe
             pipeTop.flip();
+            // randomize height
             pipeBot.randomY();
-            pipeTop.y = pipeBot.y + GC.PIPE_GAP + pipeBot.height * GC.SCALE_PIPE;
+            // randomize gap
+            randomizer = Math.floor(Math.random() * GC.PIPE_DELTA);
+            pipeTop.y = pipeBot.y + GC.PIPE_MIN_GAP + randomizer + pipeBot.height * GC.SCALE_PIPE;
+            // randomize interval
+            randomizer = Math.floor(Math.random() * GC.PIPE_DELTA);
+            this._interval = GC.PIPE_MIN_INTERVAL + randomizer;
         }
     },
 
     movePipe: function (dt) {
         GC.CONTAINER.PIPES.forEach(pipe => {
             if (pipe.active) {
-                pipe.x -= dt * GC.PIPE_SPEED;
+                pipe.x -= dt * GC.PIPE_INTERVAL;
                 if (pipe.x < -pipe.width * GC.SCALE_PIPE) {
                     pipe.x = GC.PIPEX;
                     pipe.active = false;
@@ -190,7 +220,7 @@ var ScreenPlay = cc.Layer.extend({
         this._score.setString(this.score);
     },
 
-    gravityMove: function (dt) {
+    birdMove: function (dt) {
         this._bird.move(dt);
     },
 
@@ -215,7 +245,12 @@ var ScreenPlay = cc.Layer.extend({
                     }
                     if(GC.KEYS[cc.KEY.p]) {
                         GC.KEYS[cc.KEY.p] = false;
-                        gameController._state = GC.GAME_STATE.PAUSE;
+                        gameController.setState(GC.GAME_STATE.PAUSE);
+                    }
+                } else if (gameController._state === GC.GAME_STATE.PAUSE) {
+                    if(GC.KEYS[cc.KEY.p]) {
+                        GC.KEYS[cc.KEY.p] = false;
+                        gameController.setState(GC.GAME_STATE.PLAY);
                     }
                 }
             }, 0)
@@ -233,8 +268,9 @@ var ScreenPlay = cc.Layer.extend({
     },
 
     onGameOver: function () {
+        this._score.visible = false;
         overLayer.setVisible(true);
-        this._score.setVisible(false);
+        overLayer.initTitle();
         gameController._state = GC.GAME_STATE.OVER;
     },
 
