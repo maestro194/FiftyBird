@@ -1,5 +1,4 @@
 ## To do
-- Bird rotation
-
+- Fix collision with rotation
 ## Known bugs
 - SFX causes lag

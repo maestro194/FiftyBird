@@ -8,8 +8,8 @@ var Bird = cc.Sprite.extend({
         var rect = cc.rect(0, 0, this.width, this.height);
         this.setTextureRect(rect);
         this.setPosition(GC.BIRDX, GC.BIRDY);
-        this.anchorX = 0;
-        this.anchorY = 0;
+        this.anchorX = 0.5;
+        this.anchorY = 0.5;
         this.scale = GC.SCALE_BIRD;
         this.speed = 0;
     },
@@ -18,7 +18,7 @@ var Bird = cc.Sprite.extend({
         this.active = false;
     },
     move: function (dt) {
-        this.speed += dt * GC.SPEED_MULTIPLIER;
+        this.speed += dt * GC.GRAVITY;
         if (this.speed > GC.GRAVITY)
             this.speed = GC.GRAVITY;
         // console.log(this.speed);
@@ -33,14 +33,18 @@ var Bird = cc.Sprite.extend({
     },
 
     rotate: function() {
-        this.rotation = this.speed / GC.GRAVITY * 90;
-        this.setRotation(this.rotation);
+        let rotation = this.speed / GC.GRAVITY * 120;
+        if (rotation < -30)
+            rotation = -30;
+        this.setRotation(rotation);
     },
 
     collideRect:function (x, y) {
         let w = this.width * GC.SCALE_BIRD;
         let h = this.height * GC.SCALE_BIRD;
-        return cc.rect(x, y, w, h);
+        let rect = cc.rect(x - w / 2, y - h / 2, w / 2, h / 2);
+        rect.setRotation(this.getRotation());
+        return rect;
     },
 });
 

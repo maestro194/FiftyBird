@@ -237,6 +237,16 @@ var ScreenPlay = cc.Layer.extend({
                         GC.KEYS[cc.KEY.p] = false;
                         gameController.setState(GC.GAME_STATE.PAUSE);
                     }
+                    if(GC.KEYS[cc.KEY.z]) {
+                        // skill 1
+                        GC.KEYS[cc.KEY.z] = false;
+                        this.birdSkill1();
+                    }
+                    if(GC.KEYS[cc.KEY.x]) {
+                        // skill 2
+                        GC.KEYS[cc.KEY.x] = false;
+                        this.birdSkill2();
+                    }
                 } else if (gameController._state === GC.GAME_STATE.PAUSE) {
                     if(GC.KEYS[cc.KEY.p]) {
                         GC.KEYS[cc.KEY.p] = false;
@@ -245,6 +255,12 @@ var ScreenPlay = cc.Layer.extend({
                 }
             }, 0)
         }
+    },
+    birdSkill1: function() {
+        console.log("skill 1: dash");
+    },
+    birdSkill2: function() {
+        console.log("skill 2: grow");
     },
     collide:function (a, b) {
         var ax = a.x, ay = a.y, bx = b.x, by = b.y;
