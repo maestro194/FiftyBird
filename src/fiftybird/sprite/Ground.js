@@ -15,9 +15,7 @@ var Ground = cc.Sprite.extend({
         this.active = false;
     },
     collideRect:function (x, y) {
-        let w = this.width * GC.SCALE;
-        let h = this.height * GC.SCALE;
-        return cc.rect(x, y, w, h);
+        return this.getBoundingBox();
     },
 });
 

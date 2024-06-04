@@ -18,6 +18,10 @@ var ScreenPlay = cc.Layer.extend({
     _interval: 0,
     _time: 0,
     _bird: null,
+    _skill1: null,
+    _cd1: null,
+    _skill2: null,
+    _cd2: null,
     _score: null,
     _pause: null,
     score: 0,
@@ -58,12 +62,22 @@ var ScreenPlay = cc.Layer.extend({
     },
     update: function (dt) {
         if (gameController._state === GC.GAME_STATE.PLAY) {
+            if (this._bird.getSkill1() > 0) {
+                this.movingGround(dt * GC.SKILL_DASH_SPEED);
+                this.spawnPipe(dt * GC.SKILL_DASH_SPEED);
+                this.movePipe(dt * GC.SKILL_DASH_SPEED);
+            } else {
+                this.movingGround(dt);
+                this.spawnPipe(dt);
+                this.movePipe(dt);
+            }
+            if (this._bird.getSkill2() > 0) {
+
+            }
             this.movingBackground(dt);
-            this.movingGround(dt);
-            this.birdMove(dt);
-            this.spawnPipe(dt);
-            this.movePipe(dt);
+            this.moveBird(dt);
             this.checkCollision();
+            this.cooldownTracking();
             this._time += dt;
             this._score.setVisible(true);
             this._pause.setVisible(false);
@@ -83,6 +97,36 @@ var ScreenPlay = cc.Layer.extend({
         this._groundWidth = this._ground.width;
 
         this._bird = Bird.create(playLayer);
+
+        this._skill1 = new cc.Sprite(res.dash_png);
+        this._skill1.setPosition(20, GC.BIRDY + 40);
+        this._skill1.anchorX = 0;
+        this._skill1.anchorY = 0;
+        this._skill1.scale = GC.SCALE_SKILL;
+        this.addChild(this._skill1, 1000);
+
+        this._cd1 = new ccui.Text(0, res.flappy_ttf, 24);
+        this._cd1.attr({
+            x: 90,
+            y: GC.BIRDY + 40,
+            visible: false,
+        });
+        this.addChild(this._cd1, 1000);
+
+        this._skill2 = new cc.Sprite(res.grow_png);
+        this._skill2.setPosition(20, GC.BIRDY - 40);
+        this._skill2.anchorX = 0;
+        this._skill2.anchorY = 0;
+        this._skill2.scale = GC.SCALE_SKILL;
+        this.addChild(this._skill2, 1000);
+
+        this._cd2 = new ccui.Text(0, res.flappy_ttf, 24);
+        this._cd2.attr({
+            x: 90,
+            y: GC.BIRDY - 40,
+            visible: false,
+        });
+        this.addChild(this._cd2, 1000);
 
         this._score = new ccui.Text(this.score, res.flappy_ttf, 64);
         this._score.attr({
@@ -114,14 +158,14 @@ var ScreenPlay = cc.Layer.extend({
             if (this.collide(bird, pipe)) {
                 this.onGameOver();
             }
-            if (pipe.x < bird.x && !pipe.passed) {
+            if (pipe.x < bird.x && !pipe.passed && pipe.y < winSize.height / 2) {
                 this.scoreCounting();
                 pipe.passed = true;
             }
         }
 
         // ground - bird
-        if (bird.y < this._ground.height) {
+        if (this.collide(bird, this._ground) ){
             this.onGameOver();
         }
     },
@@ -208,11 +252,27 @@ var ScreenPlay = cc.Layer.extend({
         })
     },
     scoreCounting: function () {
-        this.score += 0.5;
+        this.score += GC.ADD_SCORE;
         this._score.setString(this.score);
     },
-    birdMove: function (dt) {
+    moveBird: function (dt) {
         this._bird.move(dt);
+    },
+    cooldownTracking: function () {
+        // skill 1
+        if (this._bird.getCD1() === 0)
+            this._cd1.setVisible(false);
+        else {
+            this._cd1.setString(Math.floor(this._bird.getCD1()));
+            this._cd1.setVisible(true);
+        }
+        // skill 2
+        if (this._bird.getCD2() === 0)
+            this._cd2.setVisible(false);
+        else {
+            this._cd2.setString(Math.floor(this._bird.getCD2()));
+            this._cd2.setVisible(true);
+        }
     },
     addKeyboardListener:function(){
         if (cc.sys.capabilities.hasOwnProperty('keyboard')) {
@@ -258,18 +318,21 @@ var ScreenPlay = cc.Layer.extend({
     },
     birdSkill1: function() {
         console.log("skill 1: dash");
+        this._bird.setSkill1();
     },
     birdSkill2: function() {
         console.log("skill 2: grow");
+        this._bird.setSkill2();
     },
     collide:function (a, b) {
-        var ax = a.x, ay = a.y, bx = b.x, by = b.y;
         // if (Math.abs(ax - bx) > MAX_CONTAINT_WIDTH || Math.abs(ay - by) > MAX_CONTAINT_HEIGHT)
         //     return false;
 
-        var aRect = a.collideRect(ax, ay);
-        var bRect = b.collideRect(bx, by);
-        return cc.rectIntersectsRect(aRect, bRect);
+        return cc.rectIntersectsRect(a.collideRect(), b.collideRect());
+
+        // var aRect = a.collideRect(ax, ay);
+        // var bRect = b.collideRect(bx, by);
+        // return cc.rectIntersectsRect(aRect, bRect);
     },
     onGameOver: function () {
         this._score.visible = false;

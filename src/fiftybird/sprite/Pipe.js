@@ -31,9 +31,7 @@ var Pipe = cc.Sprite.extend({
         this.y = randomizer;
     },
     collideRect:function (x, y) {
-        let w = this.width * GC.SCALE_PIPE;
-        let h = this.height * GC.SCALE_PIPE;
-        return cc.rect(x, y, w, h);
+        return this.getBoundingBox();
     },
 })
 

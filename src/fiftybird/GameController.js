@@ -16,7 +16,6 @@ var GameController = cc.Class.extend({
 
         gameController = this;
 
-        // this._isNewGame = true;
         this.init();
     },
 
